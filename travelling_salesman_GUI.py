@@ -9,6 +9,8 @@ class Application(tk.Frame):
         self.c_width = 500
         self.c_height = 500
 
+        self.prev = None
+
         self.circles = []
         
         super().__init__(master)
@@ -41,6 +43,20 @@ class Application(tk.Frame):
 
     def touched(self, cid):
         self.map_area.itemconfig(cid, fill='red')
+        print(self.prev, cid)
+        if self.prev and (cid != self.prev):
+
+            prev_coords = self.map_area.coords(self.prev)
+            curr_coords = self.map_area.coords(cid)
+            x1 = prev_coords[0] + 25
+            y1 = prev_coords[1] + 25
+            x2 = curr_coords[0] + 25
+            y2 = curr_coords[1] + 25
+            self.map_area.create_line(x1, y1, x2, y2, fill='black')
+            self.prev = cid
+            print(x1, y1, x2, y2)            
+        else:
+            self.prev = cid
 
     def reset(self):
         pass
@@ -59,8 +75,10 @@ while True:
     print(data.decode().strip())
     try:
         id_nbr = int(data.decode().strip())
-        if isinstance(int(data.decode().strip()), int):
-            app.touched(int(data.decode().strip()) % 10)
+        
     except:
+        id_nbr = None
         pass
+    if id_nbr:
+        app.touched(int(data.decode().strip()) % 10)
         
